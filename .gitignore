@@ -1,3 +1,5 @@
 *__pycache__
 test_set
 train_set
+mnist_data
+mnist64_data
