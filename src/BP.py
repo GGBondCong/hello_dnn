@@ -1,4 +1,4 @@
-# bp_mnist_offline.py
+# BP.py
 import os
 import cv2
 import numpy as np
@@ -15,9 +15,9 @@ LR           = 0.05      # 学习率
 EPOCHS       = 30
 BATCH_SIZE   = 128
 MODEL_PATH   = 'bp_weights.npz'          # 权重保存路径
-IMG_DIR      = os.path.join(os.path.expanduser('~'),
-                            'Desktop', 'test_imgs')  # 桌面待识别图片目录
+IMG_DIR      = os.path.join('.', 'assets', 'imgs', 'test_imgs')  # 待识别图片目录
 ALPHA        = 0.01      # Elu alpha
+L2_LAMBDA = 1e-4         # L2 正则化系数
 
 # ------------------------------------------------
 # 1. 数据读取：torchvision 自动下载 MNIST
@@ -92,19 +92,19 @@ class BPNet:
     def backward(self, y_true):
         m = y_true.shape[0]
         dz3 = self.a3 - y_true
-        dW3 = (self.a2.T @ dz3) / m 
+        dW3 = (self.a2.T @ dz3) / m + L2_LAMBDA * self.W3
         db3 = np.sum(dz3, axis=0, keepdims=True) / m
 
         da2 = dz3 @ self.W3.T
         # dz2 = da2 * self.d_relu(self.z2)
         dz2 = da2 * self.d_swish(self.z2)
-        dW2 = (self.a1.T @ dz2) / m 
+        dW2 = (self.a1.T @ dz2) / m + L2_LAMBDA * self.W2
         db2 = np.sum(dz2, axis=0, keepdims=True) / m
 
         da1 = dz2 @ self.W2.T
         # dz1 = da1 * self.d_relu(self.z1)
         dz1 = da1 * self.d_swish(self.z1)
-        dW1 = (self.X.T @ dz1) / m 
+        dW1 = (self.X.T @ dz1) / m + L2_LAMBDA * self.W1
         db1 = np.sum(dz1, axis=0, keepdims=True) / m
 
         # 更新
@@ -170,7 +170,7 @@ def train():
     return net
 
 # ------------------------------------------------
-# 4. 推理桌面图片（OpenCV 预处理版，其余代码不变）
+# 4. 推理桌面图片（OpenCV 预处理）
 # ------------------------------------------------
 def predict_folder(net):
 
