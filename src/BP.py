@@ -223,10 +223,6 @@ def predict_folder(net):
         digit = net.predict(img_np)[0]
         print(f'{fname}  ->  识别结果: {digit}')
 
-        # 保存 debug 图
-        debug = ((img_np.reshape(28, 28) + 1) * 127.5).astype(np.uint8)
-        cv2.imwrite(os.path.join(IMG_DIR, 'debug_' + fname), debug)
-
 # ------------------------------------------------
 # 5. 主入口
 # ------------------------------------------------
