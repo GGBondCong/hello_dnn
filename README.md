@@ -9,5 +9,7 @@
 
 2. 基于经典 CNN（DenseNet / ResNet18 / VGG 任选其一）完成 MNIST 分类，要求“输入一张图片 → 输出类别”。
 
+## 学习报告
 
+[点我看报告](./notebooks/bp.ipynb)
 
